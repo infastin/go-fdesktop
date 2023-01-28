@@ -19,12 +19,14 @@ func main() {
 	var showId bool
 	var delim string
 	var help bool
+	var null bool
 
 	flag.Var("id", 'i', "If specified AppID will be printed", &showId, false)
 	flag.Var("path", 'p', "If specified Path will be printed", &showPath, false)
 	flag.Var("name", 'n', "If specified Name will be printed", &showName, false)
 	flag.Var("delim", 'd', "Delimiter for shown attributes", &delim, ":")
 	flag.Var("help", 'h', "Print help message", &help, false)
+	flag.Var("null", '0', "Separate results by the null byte", &null, false)
 
 	flag.Parse()
 
@@ -106,7 +108,13 @@ func main() {
 			b.WriteString(e.Path)
 		}
 
-		fmt.Println(b.String())
+		if null {
+			b.WriteRune(0)
+		} else {
+			b.WriteRune('\n')
+		}
+
+		fmt.Print(b.String())
 		b.Reset()
 	}
 }
