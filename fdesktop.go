@@ -18,7 +18,7 @@ type byteScanner struct {
 
 func (s byteScanner) ReadByte() (byte, error) {
 	ch, n, err := s.ReadRune()
-	if err == nil && n != 1 {
+	if err == nil && n > 1 {
 		err = fmt.Errorf("invalid rune %#U", ch)
 	}
 	return byte(ch), err
