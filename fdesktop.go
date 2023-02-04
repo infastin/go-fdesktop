@@ -35,7 +35,7 @@ type Locale struct {
 	Modifier string
 }
 
-func (l *Locale) scan(reader io.ByteReader) (err error) {
+func (l *Locale) scan(r io.ByteScanner) (err error) {
 	b := strings.Builder{}
 	i := 0
 
@@ -69,7 +69,7 @@ loop:
 	for {
 		var ch byte
 
-		ch, err = reader.ReadByte()
+		ch, err = r.ReadByte()
 		if err != nil {
 			break
 		}
@@ -124,6 +124,8 @@ loop:
 		} else {
 			err = nil
 		}
+	} else if err != nil {
+		r.UnreadByte()
 	}
 
 	return
