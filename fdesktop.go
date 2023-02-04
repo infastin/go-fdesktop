@@ -12,20 +12,20 @@ import (
 	"unicode/utf8"
 )
 
-type byteReader struct {
+type byteScanner struct {
 	fmt.ScanState
 }
 
-func (r byteReader) ReadByte() (byte, error) {
-	ch, n, err := r.ReadRune()
+func (s byteScanner) ReadByte() (byte, error) {
+	ch, n, err := s.ReadRune()
 	if err == nil && n != 1 {
 		err = fmt.Errorf("invalid rune %#U", ch)
 	}
 	return byte(ch), err
 }
 
-func (r byteReader) UnreadByte() error {
-	return r.UnreadRune()
+func (s byteScanner) UnreadByte() error {
+	return s.UnreadRune()
 }
 
 type Locale struct {
@@ -35,7 +35,7 @@ type Locale struct {
 	Modifier string
 }
 
-func (l *Locale) scan(r io.ByteScanner) (err error) {
+func (l *Locale) scan(s io.ByteScanner) (err error) {
 	b := strings.Builder{}
 	i := 0
 
@@ -69,7 +69,7 @@ loop:
 	for {
 		var ch byte
 
-		ch, err = r.ReadByte()
+		ch, err = s.ReadByte()
 		if err != nil {
 			break
 		}
@@ -125,7 +125,7 @@ loop:
 			err = nil
 		}
 	} else if err != nil {
-		r.UnreadByte()
+		s.UnreadByte()
 	}
 
 	return
@@ -140,7 +140,7 @@ func (l *Locale) Scan(state fmt.ScanState, verb rune) error {
 		return errors.New("invalid verb")
 	}
 
-	return l.scan(byteReader{state})
+	return l.scan(byteScanner{state})
 }
 
 func (l Locale) String() string {
