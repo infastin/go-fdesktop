@@ -10,7 +10,7 @@ import (
 
 	"github.com/adrg/xdg"
 	"gitlab.com/infastin/go-fdesktop"
-	"gitlab.com/infastin/go-flag"
+	"gitlab.com/infastin/go-flag/v2"
 )
 
 func main() {
@@ -21,12 +21,12 @@ func main() {
 	var help bool
 	var null bool
 
-	flag.Var("id", 'i', "If specified AppID will be printed", &showId, false)
-	flag.Var("path", 'p', "If specified Path will be printed", &showPath, false)
-	flag.Var("name", 'n', "If specified Name will be printed", &showName, false)
-	flag.Var("delim", 'd', "Delimiter for shown attributes", &delim, ":")
-	flag.Var("help", 'h', "Print help message", &help, false)
-	flag.Var("null", '0', "Separate results by the null byte", &null, false)
+	flag.Var(&showId, "id", 'i', false, "If specified AppID will be printed")
+	flag.Var(&showPath, "path", 'p', false, "If specified Path will be printed")
+	flag.Var(&showName, "name", 'n', false, "If specified Name will be printed")
+	flag.Var(&delim, "delim", 'd', ":", "Delimiter for shown attributes")
+	flag.Var(&help, "help", 'h', false, "Print help message")
+	flag.Var(&null, "null", '0', false, "Separate results by the null byte")
 
 	flag.Parse()
 
@@ -61,7 +61,7 @@ func main() {
 				return nil
 			}
 
-			appId := filepath[0:len(filepath)-len(".desktop")]
+			appId := filepath[0 : len(filepath)-len(".desktop")]
 			entryPath := path.Join(appDir, filepath)
 
 			file, err := fileSystem.Open(filepath)
@@ -88,6 +88,10 @@ func main() {
 	var b strings.Builder
 
 	for _, e := range entries {
+		if e.TryNoDisplay() {
+			continue
+		}
+
 		if showId {
 			b.WriteString(e.AppId)
 		}

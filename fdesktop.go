@@ -465,7 +465,7 @@ type Entry struct {
 func NewEntry(appId, path string) *Entry {
 	return &Entry{
 		AppId: appId,
-		Path: path,
+		Path:  path,
 	}
 }
 
@@ -509,4 +509,22 @@ func (e *Entry) TryName() (string, bool) {
 
 func (e *Entry) Name() string {
 	return e.Group("Desktop Entry").GetString("", "Name")
+}
+
+func (e *Entry) TryNoDisplay() bool {
+	m, ok := e.TryGroup("Desktop Entry")
+	if !ok {
+		return false
+	}
+
+	v, err := m.TryGetBoolean("", "NoDisplay")
+	if err != nil {
+		return false
+	}
+
+	return v
+}
+
+func (e *Entry) NoDisplay() bool {
+	return e.Group("Desktop Entry").GetBoolean("", "NoDisplay")
 }
