@@ -1,6 +1,6 @@
 module gitlab.com/infastin/go-fdesktop
 
-go 1.19
+go 1.18
 
 require (
 	github.com/adrg/xdg v0.4.0
