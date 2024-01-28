@@ -9,31 +9,20 @@ import (
 	"strings"
 
 	"github.com/adrg/xdg"
-	"gitlab.com/infastin/go-fdesktop"
-	"gitlab.com/infastin/go-flag/v2"
+	"github.com/alecthomas/kong"
+	"github.com/infastin/go-fdesktop"
 )
 
+var cli struct {
+	ShowID    bool   `optional:"" short:"i" help:"If specified AppID will be printed"`
+	ShowPath  bool   `optional:"" short:"p" help:"If specified Path will be printed"`
+	ShowName  bool   `optional:"" short:"n" help:"If specified Name will be printed"`
+	Delimiter string `optional:"" short:"d" default:":" help:"Delimiter for shown attributes"`
+	Null      bool   `optional:"" short:"0" help:"Separate results by the null byte"`
+}
+
 func main() {
-	var showName bool
-	var showPath bool
-	var showId bool
-	var delim string
-	var help bool
-	var null bool
-
-	flag.Var(&showId, "id", 'i', false, "If specified AppID will be printed")
-	flag.Var(&showPath, "path", 'p', false, "If specified Path will be printed")
-	flag.Var(&showName, "name", 'n', false, "If specified Name will be printed")
-	flag.Var(&delim, "delim", 'd', ":", "Delimiter for shown attributes")
-	flag.Var(&help, "help", 'h', false, "Print help message")
-	flag.Var(&null, "null", '0', false, "Separate results by the null byte")
-
-	flag.Parse()
-
-	if help || (!showName && !showPath && !showId) {
-		flag.PrintUsage(os.Stdout)
-		return
-	}
+	kong.Parse(&cli)
 
 	entries := []*fdesktop.Entry{}
 
@@ -92,27 +81,27 @@ func main() {
 			continue
 		}
 
-		if showId {
+		if cli.ShowID {
 			b.WriteString(e.AppId)
 		}
 
-		if showId && (showName || showPath) {
-			b.WriteString(delim)
+		if cli.ShowID && (cli.ShowName || cli.ShowPath) {
+			b.WriteString(cli.Delimiter)
 		}
 
-		if showName {
+		if cli.ShowName {
 			b.WriteString(e.Name())
 		}
 
-		if showName && showPath {
-			b.WriteString(delim)
+		if cli.ShowName && cli.ShowPath {
+			b.WriteString(cli.Delimiter)
 		}
 
-		if showPath {
+		if cli.ShowPath {
 			b.WriteString(e.Path)
 		}
 
-		if null {
+		if cli.Null {
 			b.WriteRune(0)
 		} else {
 			b.WriteRune('\n')
