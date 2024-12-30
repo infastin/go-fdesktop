@@ -16,7 +16,7 @@ var cli struct {
 	ShowID    bool   `optional:"" name:"id" short:"i" help:"Print AppID."`
 	ShowPath  bool   `optional:"" name:"path" short:"p" default:"true" negatable:"" help:"Print Path."`
 	ShowName  bool   `optional:"" name:"name" short:"n" default:"true" negatable:"" help:"Print Name."`
-	Delimiter string `optional:"" short:"d" default:":" help:"Delimiter for printed attributes."`
+	Delimiter string `optional:"" short:"d" default:"\t" help:"Delimiter for printed attributes."`
 	Null      bool   `optional:"" short:"0" help:"Separate results by the null byte."`
 }
 
