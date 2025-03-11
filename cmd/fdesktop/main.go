@@ -10,7 +10,7 @@ import (
 
 	"github.com/adrg/xdg"
 	"github.com/alecthomas/kong"
-	"github.com/infastin/go-fdesktop"
+	"github.com/infastin/fdesktop-go"
 )
 
 var cli struct {

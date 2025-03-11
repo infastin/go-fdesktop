@@ -1,4 +1,4 @@
-module github.com/infastin/go-fdesktop
+module github.com/infastin/fdesktop-go
 
 go 1.21
 
